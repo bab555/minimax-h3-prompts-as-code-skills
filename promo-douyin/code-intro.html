@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H3 状态程序 · 录屏用</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: #0a0a0c;
+      color: #e8e6e3;
+      font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
+      overflow: hidden;
+    }
+    .phone {
+      width: min(100vw, calc(100vh * 9 / 16));
+      height: min(100vh, calc(100vw * 16 / 9));
+      margin: auto;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(165deg, #12121a 0%, #0a0a0c 45%, #1a1520 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6vw 5vw;
+      border: 1px solid #2a2a35;
+    }
+    .tag {
+      font-size: clamp(10px, 2.8vw, 13px);
+      letter-spacing: 0.2em;
+      color: #7a8494;
+      margin-bottom: 2vh;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    h1 {
+      font-size: clamp(18px, 5.2vw, 28px);
+      font-weight: 600;
+      line-height: 1.35;
+      margin-bottom: 3vh;
+      opacity: 0;
+    }
+    .code {
+      font-size: clamp(11px, 3.2vw, 15px);
+      line-height: 1.65;
+      background: #0d0d12;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 3.5vw;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .line { opacity: 0.35; transition: opacity 0.35s, color 0.35s; }
+    .line.on { opacity: 1; color: #fff; }
+    .kw { color: #c792ea; }
+    .fn { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .err { color: #ff5370; }
+    .ok { color: #89ddff; }
+    .cm { color: #546e7a; }
+    .eq { color: #ffcb6b; }
+    .hint {
+      position: absolute;
+      bottom: 3vh;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: clamp(9px, 2.5vw, 12px);
+      color: #555;
+    }
+    .act { display: none; flex-direction: column; flex: 1; justify-content: center; }
+    .act.active { display: flex; }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3vw;
+      margin-top: 2vh;
+      font-size: clamp(10px, 2.8vw, 13px);
+    }
+    .box {
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 3vw;
+      opacity: 0.4;
+      transition: opacity 0.5s, border-color 0.5s;
+    }
+    .box.on { opacity: 1; border-color: #89ddff; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes pop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pop { animation: pop 0.5s ease forwards; }
+  </style>
+</head>
+<body>
+  <div class="phone" id="root">
+    <div class="act active" id="act1">
+      <div class="tag pop" style="animation-delay: 0.1s">DEBUG · undefined reference</div>
+      <h1 class="pop" style="animation-delay: 0.25s">幻听 / 乱入<br/>≈ 程序里的未声明变量</h1>
+      <div class="code" id="code1"><span class="cm">// 本段作用域</span>
+<span class="line l1"><span class="fn">frame</span>.<span class="fn">use</span>(<span class="str">&lt;Subject 2&gt;</span>);  <span class="err">// ReferenceError</span></span>
+<span class="line l2"><span class="cm">// 未在 subject_definitions 声明</span></span>
+<span class="line l3"><span class="fn">audio</span>.<span class="fn">play</span>(<span class="str">"她说…"</span>);     <span class="err">// summary 触发 TTS</span></span>
+<span class="line l4"><span class="kw">fix</span>: <span class="fn">declare</span>(<span class="str">Subject 2</span>, { <span class="str">lips</span>: <span class="str">"closed"</span> });</span></div>
+    </div>
+
+    <div class="act" id="act2">
+      <div class="tag">STATE PROGRAM</div>
+      <h1>S₁ = S₀ + a₁</h1>
+      <div class="code" id="code2"><span class="line s0"><span class="kw">const</span> S0 <span class="eq">=</span> <span class="str">"她坐在靠窗桌边，双手在桌面，嘴唇闭着"</span>;</span>
+<span class="line a1"><span class="kw">const</span> a1 <span class="eq">=</span> <span class="str">"双手撑桌站起来"</span>;</span>
+<span class="line s1"><span class="kw">const</span> S1 <span class="eq">=</span> S0 + a1;  <span class="cm">// → 站在桌边</span></span>
+<span class="line ret"><span class="fn">retention</span>({ <span class="str">当前状态</span>: S0 });</span>
+<span class="line shot"><span class="fn">Shot1</span>.<span class="fn">run</span>(S0, a1, ...);</span></div>
+    </div>
+
+    <div class="act" id="act3">
+      <div class="tag">HARD CUT vs GUIDE</div>
+      <h1>初值谁绑？</h1>
+      <div class="split">
+        <div class="box" id="hard">
+          <strong>硬切</strong><br/><br/>
+          retention<br/>
+          当前状态：全文<br/>
+          Shot1 复述 S0
+        </div>
+        <div class="box" id="guide">
+          <strong>引导 22 帧</strong><br/><br/>
+          上端 = I2V<br/>
+          勿强绑冲突初态<br/>
+          只写新动作
+        </div>
+      </div>
+      <div class="code" style="margin-top: 3vh; font-size: clamp(10px, 2.8vw, 13px);">
+        <span class="ok">h3-state-program-skills</span>
+      </div>
+    </div>
+
+    <div class="hint">自动播放 · 按 R 重播 · 录屏请 9:16 框选本区域</div>
+  </div>
+  <script>
+    const acts = [document.getElementById("act1"), document.getElementById("act2"), document.getElementById("act3")];
+    const timelines = [
+      () => highlight("#code1 .l1", 400),
+      () => highlight("#code1 .l3", 400),
+      () => highlight("#code1 .l4", 400),
+      () => switchAct(1),
+      () => highlight("#code2 .s0", 500),
+      () => highlight("#code2 .a1", 500),
+      () => highlight("#code2 .s1", 500),
+      () => highlight("#code2 .ret", 500),
+      () => highlight("#code2 .shot", 500),
+      () => switchAct(2),
+      () => document.getElementById("hard").classList.add("on"),
+      () => document.getElementById("guide").classList.add("on"),
+    ];
+    let step = 0;
+    let timer;
+
+    function highlight(sel, delay) {
+      return new Promise((r) => {
+        timer = setTimeout(() => {
+          document.querySelectorAll(".line.on").forEach((e) => e.classList.remove("on"));
+          const el = document.querySelector(sel);
+          if (el) el.classList.add("on");
+          r();
+        }, delay);
+      });
+    }
+
+    function switchAct(n) {
+      return new Promise((r) => {
+        timer = setTimeout(() => {
+          acts.forEach((a, i) => a.classList.toggle("active", i === n));
+          document.querySelectorAll(".line.on").forEach((e) => e.classList.remove("on"));
+          document.querySelectorAll(".box.on").forEach((e) => e.classList.remove("on"));
+          r();
+        }, 600);
+      });
+    }
+
+    async function run() {
+      step = 0;
+      acts[0].classList.add("active");
+      acts[1].classList.remove("active");
+      acts[2].classList.remove("active");
+      document.querySelectorAll(".line.on").forEach((e) => e.classList.remove("on"));
+      document.querySelectorAll(".box.on").forEach((e) => e.classList.remove("on"));
+      for (const fn of timelines) await fn();
+      timer = setTimeout(run, 2500);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "r" || e.key === "R") {
+        clearTimeout(timer);
+        run();
+      }
+    });
+
+    run();
+  </script>
+</body>
+</html>
