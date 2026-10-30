@@ -39,7 +39,7 @@ non_diegetic_music: 1–3 句英文写配器与速度（角色听不见、只有
 
 - 台词逐字、身份写在台词外面（见 `shot-writing.md`）。H3 特有的是**标记方式**：台词进 `<d>[Chinese] …</d>`，`<d>` 里只放语言标签和台词原文
 - 说话人编号 `(S1)` `(S2)` 全段稳定，第一次出现给足辨识信息（身份、年龄段、音色、语速）；同说不同人用 `(S1,S2)`
-- **画外音**：中文写「以画外音说（唇形完全闭合）」；英文用官方句式 `says in an off-screen voiceover … while their lips remain completely closed`
+- **画外音**：画面外的人（服务员、路人）先声明成 `<Subject N>`，写明不入画、由它承载对白，镜头句写「`<Subject N>`（S1）说：`<d>`…`</d>`」；画面里的听众只在 `retention_analysis` 写一次嘴唇闭着。只有**画内同一角色念自己的旁白**时，才照抄官方句式 `says in an off-screen voiceover … while their lips remain completely closed`
 - 画面里真实可见的文字（招牌、字条）用英文双引号原样引用，不翻译
 
 ## 声音字段名

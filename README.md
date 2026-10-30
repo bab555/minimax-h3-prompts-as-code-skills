@@ -22,10 +22,14 @@ MiniMax H3 的提示词在官方产品里已经是一套**固定字段、固定�
 | 主程序 | `detailed_description` / `integrated_multimodal_description` 的 `[Shot 1]`：从初值出发，一步一改 |
 | 副作用 I/O | `overall_soundscape`（环境声）、`non_diegetic_music`（配乐或 `none`） |
 | 未声明就使用 | 正文或 summary 里出现未在 `subject_definitions` 定义的标签 → 乱入、换脸、**来源不明的说话声** |
-| 新作用域 | 每次生成是独立一段；硬切不继承上一段的声明，须在本段重新 declare |
+| 新作用域 | 每次生成是独立一段；硬切不继承上一段的声明，须在本段重新声明 |
 | 调试 | 幻听、跳镜、重复动作 → 查声明是否齐全、初值与动作是否矛盾、summary 是否误触发语言 |
 
-状态转移可以写成：**S₁ = S₀ + a₁**（当前状态 + 一个动作 = 下一状态）。`h3-prompt-writing` 里的 `references/*.txt` 与 MiniMax 官方字段对齐；产品更新时请对照官方文档自行 diff。
+状态转移可以写成：**S₁ = S₀ + a₁**（当前状态 + 一个动作 = 下一状态）。
+
+**最核心的一条：** 本段没有声明的对象，不能给它写动作、状态或台词。比如正文写「服务员说：……」，服务员却没在 `subject_definitions` 里声明，模型找不到这句话的承载者，常见结果是整段文字被念成语音，或者台词落到画面里唯一的人嘴上。
+
+**编程只是类比。** 上表帮助理解模型怎么读提示词；提示词本身仍写普通的画面描述，不出现 `import`、`S0`、「变量」这类词。`h3-prompt-writing` 里的 `references/*.txt` 与 MiniMax 官方字段对齐；产品更新时请对照官方文档自行 diff。
 
 ---
 
